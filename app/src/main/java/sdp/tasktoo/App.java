@@ -16,7 +16,7 @@ public class App {
 
     public static void main(String[] args) {
         try {
-            File inputFile = new File("example.xml");
+            File inputFile = new File("data.xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(inputFile);
