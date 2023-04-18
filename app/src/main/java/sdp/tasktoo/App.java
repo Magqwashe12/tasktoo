@@ -3,11 +3,18 @@
  */
 package sdp.tasktoo;
 import java.io.File;
-import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.IOException;
+import java.util.Scanner;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.XML;
+/*import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
+import org.xml.sax.SAXException;*/
 
 public class App {
     public String getGreeting() {
@@ -15,7 +22,7 @@ public class App {
     }
 
     public static void main(String[] args) {
-        try {
+       /*  try {
             File inputFile = new File("data.xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -35,5 +42,74 @@ public class App {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
+    /*
+    try {
+        // Get user-selected fields
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter comma-separated list of fields to output: ");
+        String input = scanner.nextLine();
+        String[] fields = input.split(",");
+  
+        // Load XML file
+        File inputFile = new File("data.xml");
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        Document doc = dBuilder.parse(inputFile);
+        doc.getDocumentElement().normalize();
+  
+        // Traverse XML and output selected fields
+        NodeList nodeList = doc.getElementsByTagName("person");
+        for (int i = 0; i < nodeList.getLength(); i++) {
+          String output = "";
+          for (String field : fields) {
+            output += nodeList.item(i).getAttributes().getNamedItem(field).getNodeValue() + " ";
+          }
+          System.out.println(output.trim());
+        }
+      } catch (IOException | ParserConfigurationException | SAXException e) {
+        e.printStackTrace();
+      }
+ } */
+         // Read the XML file
+         String xml = readFile("data.xml");
+
+         // Convert XML to JSON
+         JSONObject jsonObj = XML.toJSONObject(xml);
+ 
+         // Get the user-selected fields
+         Scanner scanner = new Scanner(System.in);
+         System.out.println("Enter the fields you want to output in JSON format (separated by commas): ");
+         String[] selectedFields = scanner.nextLine().split(",");
+ 
+         // Create a JSON object with the selected fields
+         JSONObject selectedJsonObj = new JSONObject();
+         for (String field : selectedFields) {
+             if (jsonObj.has(field)) {
+                 selectedJsonObj.put(field, jsonObj.get(field));
+             }
+         }
+ 
+         // Convert the selected JSON object to JSON array
+         JSONArray jsonArray = new JSONArray();
+         jsonArray.put(selectedJsonObj);
+ 
+         // Print the JSON array
+         System.out.println(jsonArray.toString());
+     }
+ 
+     private static String readFile(String fileName) {
+         try {
+             Scanner scanner = new Scanner(new File(fileName));
+             StringBuilder stringBuilder = new StringBuilder();
+             while (scanner.hasNextLine()) {
+                 stringBuilder.append(scanner.nextLine());
+             }
+             scanner.close();
+             return stringBuilder.toString();
+         } catch (IOException e) {
+             e.printStackTrace();
+             return null;
+         }
+     }
 }
